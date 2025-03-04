@@ -1,15 +1,16 @@
 import { useState } from "react";
 import supabase from "./utils/supabase";
 import { Form, Input, Button, message, Card } from "antd";
-import { User } from "./Interface/users";
+import { Profile } from "./Interface/profiles";
 
 export default function InsertForm() {
   const [loading, setLoading] = useState<boolean>(false);
-  const onFinish = async (values: User) => {
+  const onFinish = async (values: Profile) => {
     setLoading(true);
-    const { error } = await supabase.from("users").insert([values]);
+    const { error } = await supabase.from("profiles").insert([values]);
     if (error) {
       message.error('Error: ${error.Message}');
+
     } else {
       message.success("Usuario agregado con exito.")
     }
@@ -17,28 +18,28 @@ export default function InsertForm() {
   };
 
   return (
-    <Card title="Agregar Usuario" style={{ width: 400, margin: "20px auto" }}>
+    <Card title="Agregar Profile" style={{ width: 400, margin: "20px auto" }}>
       <Form layout="vertical" onFinish={onFinish}>
         <Form.Item
-          label="Correo"
-          name="email"
+          label="Nombre"
+          name="full_name"
           rules={[
-            { required: true, message: "Por favor ingresa el correo" },
-            { type: "email", message: "Correo no válido" }
+            { required: true, message: "Por favor ingrese su nombre" },
+            { message: "Nombre no válido" }
           ]}
         >
-          <Input placeholder="Correo electrónico" />
+          <Input placeholder="Nombre completo" />
         </Form.Item>
 
         <Form.Item
-          label="Teléfono"
-          name="phone"
+          label="Foto"
+          name="avatar_url"
           rules={[
-            { required: true, message: "Por favor ingresa el teléfono" },
-            { pattern: /^[0-9]+$/, message: "Solo se permiten números" }
+            { required: true, message: "Por favor suba una foto" },
+            { type: "url", message: "No válido" }
           ]}
         >
-          <Input placeholder="Teléfono" />
+          <Input placeholder="Url de su foto" />
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" loading={loading} block>
