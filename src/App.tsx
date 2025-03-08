@@ -1,53 +1,29 @@
-import { useState } from "react";
-import supabase from "./utils/supabase";
-import { Form, Input, Button, message, Card } from "antd";
-import { User } from "./Interface/users";
+// App.tsx
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MainInterface from "./mainInterface";
+import RemindersList from "./remindersList";
+import ProfilesList from "./profilesList";
+import EventsList from "./eventsList";
+import UserList from "./userList";
+import User from "./User";
+import Reminder from "./Reminders";
+import Profile from "./Profiles";
+import Event from "./Events";
 
-export default function InsertForm() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const onFinish = async (values: User) => {
-    setLoading(true);
-    const { error } = await supabase.from("users").insert([values]);
-    if (error) {
-      message.error('Error: ${error.Message}');
-    } else {
-      message.success("Usuario agregado con exito.")
-    }
-    setLoading(false);
-  };
-
+export default function App() {
   return (
-    <Card title="Agregar Usuario" style={{ width: 400, margin: "20px auto" }}>
-      <Form layout="vertical" onFinish={onFinish}>
-        <Form.Item
-          label="Correo"
-          name="email"
-          rules={[
-            { required: true, message: "Por favor ingresa el correo" },
-            { type: "email", message: "Correo no válido" }
-          ]}
-        >
-          <Input placeholder="Correo electrónico" />
-        </Form.Item>
-
-        <Form.Item
-          label="Teléfono"
-          name="phone"
-          rules={[
-            { required: true, message: "Por favor ingresa el teléfono" },
-            { pattern: /^[0-9]+$/, message: "Solo se permiten números" }
-          ]}
-        >
-          <Input placeholder="Teléfono" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading} block>
-            Agregar
-          </Button>
-        </Form.Item>
-
-      </Form>
-    </Card>
-
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainInterface />} />
+        <Route path="/remindersList" element={<RemindersList />} />
+        <Route path="/profilesList" element={<ProfilesList />} />
+        <Route path="/eventsList" element={<EventsList />} />
+        <Route path="/userList" element={<UserList />} />
+        <Route path="/addUser" element={<User/>} />
+        <Route path="/addReminder" element={<Reminder />} />
+        <Route path="/addProfile" element={<Profile />} />
+        <Route path="/addEvent" element={<Event />} />
+      </Routes>
+    </Router>
   );
 }
