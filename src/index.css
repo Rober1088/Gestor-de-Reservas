@@ -12,6 +12,16 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* Asegura una alineación vertical */
+  justify-content: center; /* Centra verticalmente */
+  align-items: center; /* Centra horizontalmente */
+  margin: 0;
+  padding: 0;
+}
 
 a {
   font-weight: 500;

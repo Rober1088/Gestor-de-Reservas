@@ -1,0 +1,11 @@
+cambios realizados a dia 10 de marzo del 2025
+se cambio la base de datos de supabase de 5 tablas a 3 y ya esta mas entendible
+se hicieron los 3 modelos de la base de datos en la carpeta models(employees,events y users)
+se hizo una carpeta views para las vistas de la app
+employeesV es una tabla donde se ve la info de esta misma pero en supabase
+usersV es una tabla donde se ve la info de esta misma pero en supabase
+EventssV es una tabla donde se ve la info de esta misma pero en supabase
+home view es la vista principal que te lleva con 3 botones diferentes a las vistas ya habladas
+sse hizo el folder de controllers para hacer el supabasedatafetch que jala la info de supabase y la trae al proyecto
+se cambio el app que renderiza el home view
+y el main renderiza el app
