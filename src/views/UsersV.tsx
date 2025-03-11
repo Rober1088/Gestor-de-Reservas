@@ -36,7 +36,11 @@ export default function UsersV() {
         loading={loading}
         pagination={{ pageSize: 5 }}
       />
-      <Button type="primary" style={{ marginTop: 16, marginRight: 8 }}>
+      <Button
+        type="primary"
+        style={{ marginTop: 16, marginRight: 8 }}
+        onClick={() => navigate("/users/form")}  
+      >
         Añadir Usuario
       </Button>
       <Button type="default" onClick={() => navigate("/")}>

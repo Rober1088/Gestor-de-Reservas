@@ -38,7 +38,11 @@ export default function EventsV() {
         loading={loading}
         pagination={{ pageSize: 5 }}
       />
-      <Button type="primary" style={{ marginTop: 16, marginRight: 8 }}>
+      <Button 
+        type="primary" 
+        style={{ marginTop: 16, marginRight: 8 }} 
+        onClick={() => navigate("/events/form")} // Cambiar a la ruta correcta
+      >
         Añadir Evento
       </Button>
       <Button type="default" onClick={() => navigate("/")}>
