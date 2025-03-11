@@ -10,6 +10,7 @@ export async function fetchEmployees(): Promise<Employee[] | null> {
     return null;
   }
   return data;
+  console.log("se jalo la data papu")
 }
 
 export async function fetchEvents(): Promise<Event[] | null> {
