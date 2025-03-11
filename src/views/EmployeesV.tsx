@@ -27,7 +27,7 @@ const EmployeesVista: React.FC = () => {
     <div style={{ padding: 20 }}>
       <h2>Trabajadores</h2>
       <Table dataSource={employees} columns={columns} rowKey="id" />
-      <Button type="primary" style={{ marginTop: "16px", marginRight: 8 }}>
+      <Button type="primary" style={{ marginTop: "16px", marginRight: 8 }}onClick={() => navigate("/employees/form")}>
         Añadir Empleado
       </Button>
       <Button type="default" onClick={() => navigate("/")}>

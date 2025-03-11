@@ -1,26 +1,33 @@
 import { useState } from "react";
-import supabase from "../utils/supabase";
 import { Form, Input, Button, message, Card, Checkbox } from "antd";
 import { Employee } from "../Models/employees";
+import { insertEmployee } from "../controllers/supabaseDataInsert"
 
 export default function EmployeeInsertForm() {
   const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm(); // Manejo de estado del formulario
 
-  // Omitimos el "id" ya que es autogenerado por Supabase
   const onFinish = async (values: Omit<Employee, "id">) => {
     setLoading(true);
-    const { error } = await supabase.from("employees").insert([values]);
-    if (error) {
-      message.error(`Error: ${error.message}`);
-    } else {
+
+    // Convertimos `is_admin` a booleano
+    const formattedValues = { ...values, is_admin: !!values.is_admin };
+
+    const result = await insertEmployee(formattedValues);
+
+    if (result) {
       message.success("Empleado agregado con éxito.");
+      form.resetFields(); // Limpiamos el formulario tras la inserción
+    } else {
+      message.error("Error al agregar empleado.");
     }
+
     setLoading(false);
   };
 
   return (
     <Card title="Agregar Empleado" style={{ width: 400, margin: "20px auto" }}>
-      <Form layout="vertical" onFinish={onFinish}>
+      <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item
           label="Nombre"
           name="nombre"
