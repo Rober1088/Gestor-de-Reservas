@@ -3,6 +3,8 @@ import HomeView from "./views/HomeView";
 import EmployeesV from "./views/EmployeesV";
 import EventsV from "./views/EventsV";
 import UsersV from "./views/UsersV";
+import EmployeesList from "./views/EmployeesV";
+import EmployeesForm from "./views/EmployeesForm";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <Route path="/employees" element={<EmployeesV />} />
         <Route path="/events" element={<EventsV />} />
         <Route path="/users" element={<UsersV />} />
+        <Route path="/employees" element={<EmployeesList />} />
+        <Route path="/employees/form" element={<EmployeesForm />} />
       </Routes>
     </Router>
   );
