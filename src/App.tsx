@@ -15,13 +15,26 @@ function App() {
   const navigator = useNavigate();
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigator("/login");
-      } else {
-        navigator("/");
+      }
+    };
+
+    checkSession();
+
+    
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        navigator("/login");
       }
     });
+
+   
+    return () => {
+      listener.subscription.unsubscribe();
+    };
   }, [navigator]);
 
   return (
