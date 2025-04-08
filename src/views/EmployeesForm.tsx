@@ -12,8 +12,7 @@ export default function EmployeeInsertForm() {
   const onFinish = async (values: Omit<Employee, "id">) => {
     setLoading(true);
 
-    
-    const formattedValues = { ...values, admin: !!values.is_admin };
+    const formattedValues = { ...values, is_admin: !!values.is_admin };
 
     const result = await insertEmployee(formattedValues);
 
