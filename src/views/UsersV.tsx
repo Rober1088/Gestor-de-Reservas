@@ -9,16 +9,18 @@ export default function UsersV() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+
   useEffect(() => {
     async function loadUsers() {
       setLoading(true);
       const data = await fetchUsers();
+      console.log("Usuarios obtenidos:", data); 
       setUsers(data || []);
       setLoading(false);
     }
     loadUsers();
   }, []);
-
+  
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Email", dataIndex: "email", key: "email" },
@@ -49,3 +51,4 @@ export default function UsersV() {
     </div>
   );
 }
+

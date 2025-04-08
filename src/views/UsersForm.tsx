@@ -64,5 +64,4 @@ export default function UserInsertForm() {
         </Form.Item>
       </Form>
     </Card>
-  );
-}
+  ); }
