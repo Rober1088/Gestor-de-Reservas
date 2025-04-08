@@ -1,41 +1,74 @@
 import { useState } from "react";
+import { Button, Form, Input, Typography, message, Card } from "antd";
 import supabase from "../utils/supabase";
 
+const { Title } = Typography;
 
-function Login() {
-  const [email, setEmail] = useState("");
+export default function Login() {
+  const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (email === "") {
-      console.log("correo vacío");
-    }
+  const handleSubmit = async (values: { email: string }) => {
+    const { email } = values;
 
+    setLoading(true);
     try {
-      const result = await supabase.auth.signInWithOtp({
-        email: email,
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
         options: { shouldCreateUser: true },
       });
-      console.log(result);
-    } catch (error) {
-      console.log(error);
+
+      if (error) {
+        message.error("Error al iniciar sesión: " + error.message);
+      } else {
+        message.success("Correo enviado. Revisa tu bandeja de entrada.");
+      }
+    } catch (err: any) {
+      message.error("Ocurrió un error inesperado.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="form-area">
-      <form onSubmit={handleSubmit}>
-        <h1>FileCastle</h1>
-        <input
-          onChange={(e) => setEmail(e.target.value)}
-          name="email"
-          type="email"
-          placeholder="E-mail"
-        />
-        <button type="submit">Iniciar Sesión</button>
-      </form>
+    <div
+      style={{
+        height: "100vh",
+        background: "#f0f2f5",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Card
+        title={<Title level={2}>Manejo de citas</Title>}
+        bordered={false}
+        style={{ width: 400, textAlign: "center" }}
+      >
+        <Form layout="vertical" onFinish={handleSubmit}>
+          <Form.Item
+            name="email"
+            label="Correo Electrónico"
+            rules={[
+              { required: true, message: "Por favor ingresa tu correo." },
+              { type: "email", message: "Correo no válido." },
+            ]}
+          >
+            <Input placeholder="correo@ejemplo.com" />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              block
+            >
+              Iniciar Sesión
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
     </div>
   );
 }
-
-export default Login;
