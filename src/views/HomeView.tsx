@@ -17,7 +17,7 @@ export default function HomeView() {
   );
 }
 
-// 🎨 Estilos en línea
+//Estilos en línea
 const containerStyle: React.CSSProperties = {
   display: "flex",
   justifyContent: "center",
