@@ -12,6 +12,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.48.1",
     "antd": "^5.24.2",
+    "dayjs": "^1.11.13",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0"
