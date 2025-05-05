@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const EmployeesVista: React.FC = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
-  const [searchId, setSearchId] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,9 +22,11 @@ const EmployeesVista: React.FC = () => {
   }, []);
 
   const handleSearch = (value: string) => {
-    setSearchId(value);
+    setSearchTerm(value);
+    const term = value.toLowerCase().trim();
     const filtered = employees.filter(emp =>
-      emp.id.toString().includes(value.trim())
+      emp.id.toString().includes(term) ||
+      emp.nombre?.toLowerCase().includes(term)
     );
     setFilteredEmployees(filtered);
   };
@@ -39,17 +41,17 @@ const EmployeesVista: React.FC = () => {
       key: "admin",
       render: (admin: boolean) => (admin ? "Sí" : "No"),
     },
-    // ¡Contraseña eliminada!
   ];
 
   return (
     <div style={{ padding: 20 }}>
       <h2>Trabajadores</h2>
-      
+
       <Input.Search
-        placeholder="Buscar por ID"
-        value={searchId}
+        placeholder="Buscar por ID o Nombre"
+        value={searchTerm}
         onChange={(e) => handleSearch(e.target.value)}
+        onSearch={handleSearch}
         style={{ width: 300, marginBottom: 16 }}
         allowClear
       />

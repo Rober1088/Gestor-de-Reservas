@@ -1,3 +1,4 @@
+// src/App.jsx
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import supabase from "./utils/supabase";
@@ -11,29 +12,68 @@ import EventsForm from "./views/EventsForm";
 import UsersForm from "./views/UsersForm"; 
 import Login from "./views/LoginView";
 
+import ProtectedRoute from "./controllers/protectedRoute";
+
 function App() {
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (!session) {
-        navigator("/login");
-      } else {
-        navigator("/");
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session && window.location.pathname !== "/login") {
+        navigate("/login");
       }
     });
-  }, [navigator]);
+
+    return () => {
+      listener?.subscription?.unsubscribe();
+    };
+  }, [navigate]);
 
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<HomeView />} />
-      <Route path="/employees" element={<EmployeesVista />} />
-      <Route path="/employees/form" element={<EmployeesForm />} />
-      <Route path="/events" element={<EventsV />} />
-      <Route path="/events/form" element={<EventsForm />} />
-      <Route path="/users" element={<UsersV />} />
-      <Route path="/users/form" element={<UsersForm />} />
+      
+      <Route path="/" element={
+        <ProtectedRoute>
+          <HomeView />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/employees" element={
+        <ProtectedRoute>
+          <EmployeesVista />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/employees/form" element={
+        <ProtectedRoute>
+          <EmployeesForm />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/events" element={
+        <ProtectedRoute>
+          <EventsV />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/events/form" element={
+        <ProtectedRoute>
+          <EventsForm />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/users" element={
+        <ProtectedRoute>
+          <UsersV />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/users/form" element={
+        <ProtectedRoute>
+          <UsersForm />
+        </ProtectedRoute>
+      } />
     </Routes>
   );
 }
