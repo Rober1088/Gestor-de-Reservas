@@ -2,7 +2,6 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import supabase from "./utils/supabase";
-
 import HomeView from "./views/HomeView";
 import EmployeesVista from "./views/EmployeesV";
 import EventsV from "./views/EventsV";
@@ -11,8 +10,10 @@ import EmployeesForm from "./views/EmployeesForm";
 import EventsForm from "./views/EventsForm"; 
 import UsersForm from "./views/UsersForm"; 
 import Login from "./views/LoginView";
-
-import ProtectedRoute from "./controllers/protectedRoute";
+import Header from "./views/Header";
+import Botton from "./views/Bottom";
+import "./App.css";
+import ProtectedRoute from "./controllers/ProtectedRoute";
 
 function App() {
   const navigate = useNavigate();
@@ -30,6 +31,8 @@ function App() {
   }, [navigate]);
 
   return (
+    <div>
+      <Header />
     <Routes>
       <Route path="/login" element={<Login />} />
       
@@ -75,6 +78,8 @@ function App() {
         </ProtectedRoute>
       } />
     </Routes>
+    <Botton />
+    </div>
   );
 }
 
