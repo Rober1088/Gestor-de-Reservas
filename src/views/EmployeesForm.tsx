@@ -2,23 +2,25 @@ import { useState } from "react";
 import { Form, Input, Button, message, Card, Checkbox } from "antd";
 import { Employee } from "../Models/employees";
 import { insertEmployee } from "../controllers/supabaseDataInsert";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate para la navegación
+import { useNavigate } from "react-router-dom";
 
 export default function EmployeeInsertForm() {
   const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm(); // Manejo de estado del formulario
-  const navigate = useNavigate(); // Hook para la navegación
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
 
-  const onFinish = async (values: Omit<Employee, "id">) => {
+  const onFinish = async (values: any) => {
     setLoading(true);
 
-    const formattedValues = { ...values, is_admin: !!values.is_admin };
+    // Eliminamos confirmarContrasena antes de enviar
+    const { confirmarContrasena, ...formattedValues } = values;
+    formattedValues.is_admin = !!formattedValues.is_admin;
 
     const result = await insertEmployee(formattedValues);
 
     if (result) {
       message.success("Empleado agregado con éxito.");
-      form.resetFields(); // Limpiamos el formulario tras la inserción
+      form.resetFields();
     } else {
       message.error("Error al agregar empleado.");
     }
@@ -32,27 +34,63 @@ export default function EmployeeInsertForm() {
         <Form.Item
           label="Nombre"
           name="nombre"
-          rules={[{ required: true, message: "Por favor ingresa el nombre" }]}>
+          rules={[{ required: true, message: "Por favor ingresa el nombre" }]}
+        >
           <Input placeholder="Nombre completo" />
         </Form.Item>
 
         <Form.Item
           label="Rol"
           name="rol"
-          rules={[{ required: true, message: "Por favor ingresa el rol" }]}>
+          rules={[{ required: true, message: "Por favor ingresa el rol" }]}
+        >
           <Input placeholder="Rol del empleado" />
         </Form.Item>
 
-        <Form.Item name="is_admin" valuePropName="checked" initialValue={false}>
+        <Form.Item
+          name="is_admin"
+          valuePropName="checked"
+          initialValue={false}
+        >
           <Checkbox>Es administrador</Checkbox>
         </Form.Item>
 
-        {/* Agregar campo de contraseña */}
         <Form.Item
           label="Contraseña"
           name="contrasena"
-          rules={[{ required: true, message: "Por favor ingresa la contraseña" }]}>
+          rules={[
+            { required: true, message: "Por favor ingresa la contraseña" },
+            {
+              pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$/,
+              message:
+                "Debe tener al menos 6 caracteres, una mayúscula, una minúscula y un número",
+            },
+          ]}
+          hasFeedback
+        >
           <Input.Password placeholder="Contraseña" />
+        </Form.Item>
+
+        <Form.Item
+          label="Confirmar Contraseña"
+          name="confirmarContrasena"
+          dependencies={["contrasena"]}
+          hasFeedback
+          rules={[
+            { required: true, message: "Por favor confirma la contraseña" },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue("contrasena") === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(
+                  new Error("Las contraseñas no coinciden")
+                );
+              },
+            }),
+          ]}
+        >
+          <Input.Password placeholder="Repite la contraseña" />
         </Form.Item>
 
         <Form.Item>
@@ -61,7 +99,6 @@ export default function EmployeeInsertForm() {
           </Button>
         </Form.Item>
 
-        {/* Botón para regresar a la vista de empleados centrado */}
         <Form.Item style={{ textAlign: "center" }}>
           <Button type="default" onClick={() => navigate("/employees")}>
             Volver a la Vista de Empleados
