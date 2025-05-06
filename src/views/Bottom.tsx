@@ -1,12 +1,9 @@
 import supabase from "../utils/supabase";
 
-const Botton = () => {
+export default function Bottom() {
     async function logOut() {
         await supabase.auth.signOut();
     }
-    
-    return <button className="logout-button" onClick={logOut}> Cerrar Sesion </button>
-  };
-  
-  export default Botton;
-  
+
+    return <button className="logout-button" onClick={logOut}>Cerrar Sesion</button>
+};

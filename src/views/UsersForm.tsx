@@ -22,6 +22,7 @@ export default function UserInsertForm() {
     }
 
     setLoading(false);
+    navigate("/users");
   };
 
   return (
@@ -30,7 +31,7 @@ export default function UserInsertForm() {
         <Form.Item
           label="Email"
           name="email"
-          rules={[{ required: true, message: "Por favor ingresa el email" }]}
+          rules={[{ type: "email", required: true, message: "Por favor ingresa el email" }]}
         >
           <Input placeholder="Email" />
         </Form.Item>

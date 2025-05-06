@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Form, Input, Button, message, Card, Checkbox } from "antd";
-import { Employee } from "../Models/employees";
 import { insertEmployee } from "../controllers/supabaseDataInsert";
 import { useNavigate } from "react-router-dom";
 
@@ -26,6 +25,7 @@ export default function EmployeeInsertForm() {
     }
 
     setLoading(false);
+    navigate("/employees")
   };
 
   return (

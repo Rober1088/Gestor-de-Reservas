@@ -11,7 +11,7 @@ import EventsForm from "./views/EventsForm";
 import UsersForm from "./views/UsersForm"; 
 import Login from "./views/LoginView";
 import Header from "./views/Header";
-import Botton from "./views/Bottom";
+import Bottom from "./views/Bottom";
 import "./App.css";
 import ProtectedRoute from "./controllers/ProtectedRoute";
 
@@ -31,52 +31,52 @@ function App() {
   return (
     <div>
       <Header />
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      
-      <Route path="/" element={
-        <ProtectedRoute>
-          <HomeView />
-        </ProtectedRoute>
-      } />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        
+        <Route path="/" element={
+          <ProtectedRoute>
+            <HomeView />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/employees" element={
-        <ProtectedRoute>
-          <EmployeesVista />
-        </ProtectedRoute>
-      } />
+        <Route path="/employees" element={
+          <ProtectedRoute>
+            <EmployeesVista />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/employees/form" element={
-        <ProtectedRoute>
-          <EmployeesForm />
-        </ProtectedRoute>
-      } />
+        <Route path="/employees/form" element={
+          <ProtectedRoute>
+            <EmployeesForm />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/events" element={
-        <ProtectedRoute>
-          <EventsV />
-        </ProtectedRoute>
-      } />
+        <Route path="/events" element={
+          <ProtectedRoute>
+            <EventsV />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/events/form" element={
-        <ProtectedRoute>
-          <EventsForm />
-        </ProtectedRoute>
-      } />
+        <Route path="/events/form" element={
+          <ProtectedRoute>
+            <EventsForm />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/users" element={
-        <ProtectedRoute>
-          <UsersV />
-        </ProtectedRoute>
-      } />
+        <Route path="/users" element={
+          <ProtectedRoute>
+            <UsersV />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/users/form" element={
-        <ProtectedRoute>
-          <UsersForm />
-        </ProtectedRoute>
-      } />
-    </Routes>
-    <Botton />
+        <Route path="/users/form" element={
+          <ProtectedRoute>
+            <UsersForm />
+          </ProtectedRoute>
+        } />
+      </Routes>
+    <Bottom />
     </div>
   );
 }

@@ -1,12 +1,4 @@
-// src/components/Header.tsx
-import React from 'react';
-
-const Header = () => {
-  return (
-    <header className="header">
-      <h1>Gestor de Reservas</h1>
-    </header>
-  );
+export default function Header() {
+  return <h1 className='header'>Gestor de Reservas</h1>
 };
 
-export default Header;

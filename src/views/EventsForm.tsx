@@ -40,6 +40,7 @@ export default function EventsForm() {
     }
 
     setLoading(false);
+    navigate("/events");
   };
 
   return (
@@ -93,7 +94,7 @@ export default function EventsForm() {
 
         <Form.Item style={{ textAlign: "center" }}>
           <Button type="default" onClick={() => navigate("/events")}>
-            Volver a la Vista de Eventos
+            Cancelar   
           </Button>
         </Form.Item>
       </Form>
