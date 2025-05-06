@@ -36,22 +36,25 @@ export default function EventsV() {
   };
 
   const handleDelete = async (id: number) => {
-    console.log("Eliminando evento con ID:", id); // Verifica el ID
-
-    // Realizar la eliminación en la base de datos
-    const { data, error } = await supabase.from("eventos").delete().eq("id", id);
-    
+    const { error } = await supabase.from("eventos").delete().eq("id", id);
     if (error) {
       message.error("Error al eliminar la cita");
-      console.error("Error al eliminar el evento:", error);  // Ver detalles del error
     } else {
       message.success("Cita eliminada");
-      console.log("Evento eliminado correctamente", data);
-
-      // Actualizamos los estados para reflejar la eliminación en la UI
       const updatedEvents = events.filter((event) => event.id !== id);
       setEvents(updatedEvents);
       setFilteredEvents(updatedEvents);
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    const { error } = await supabase.from("eventos").delete().neq("id", -1);
+    if (error) {
+      message.error("Error al eliminar todos los eventos");
+    } else {
+      message.success("Todos los eventos fueron eliminados");
+      setEvents([]);
+      setFilteredEvents([]);
     }
   };
 
@@ -99,17 +102,30 @@ export default function EventsV() {
         pagination={{ pageSize: 5 }}
       />
 
-      <Button
-        type="primary"
-        style={{ marginTop: 16, marginRight: 8 }}
-        onClick={() => navigate("/events/form")}
-      >
-        Añadir Evento
-      </Button>
+      <div style={{ marginTop: 16 }}>
+        <Button
+          type="primary"
+          style={{ marginRight: 8 }}
+          onClick={() => navigate("/events/form")}
+        >
+          Añadir Evento
+        </Button>
 
-      <Button type="default" onClick={() => navigate("/")}>
-        Volver al Inicio
-      </Button>
+        <Popconfirm
+          title="¿Seguro que deseas eliminar todos los eventos?"
+          onConfirm={handleDeleteAll}
+          okText="Sí, eliminar todos"
+          cancelText="No"
+        >
+          <Button danger style={{ marginRight: 8 }}>
+            Eliminar Todos
+          </Button>
+        </Popconfirm>
+
+        <Button type="default" onClick={() => navigate("/")}>
+          Volver al Inicio
+        </Button>
+      </div>
     </div>
   );
 }

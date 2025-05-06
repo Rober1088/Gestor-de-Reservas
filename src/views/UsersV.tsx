@@ -1,51 +1,96 @@
-import { useState, useEffect } from "react";
-import { Table, Button, Input } from "antd";
-import { fetchUsers } from "../controllers/supabaseDataFetch";
-import { User } from "../Models/users";
+import React, { useEffect, useState } from "react";
+import { Table, Button, Input, Popconfirm, message } from "antd";
+import { fetchEmployees } from "../controllers/supabaseDataFetch";
+import { Employee } from "../Models/employees";
 import { useNavigate } from "react-router-dom";
+import supabase from "../utils/supabase";
 
-export default function UsersV() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+const EmployeesVista: React.FC = () => {
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function loadUsers() {
+    async function loadEmployees() {
       setLoading(true);
-      const data = await fetchUsers();
-      console.log("Usuarios obtenidos:", data);
-      setUsers(data || []);
-      setFilteredUsers(data || []);
+      const data = await fetchEmployees();
+      console.log("Empleados obtenidos:", data);
+      setEmployees(data || []);
+      setFilteredEmployees(data || []);
       setLoading(false);
     }
-    loadUsers();
+    loadEmployees();
   }, []);
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
     const term = value.toLowerCase().trim();
-    const filtered = users.filter(user =>
-      user.id.toString().includes(term) ||
-      user.nombre_usuario?.toLowerCase().includes(term)
+    const filtered = employees.filter(emp =>
+      emp.id.toString().includes(term) ||
+      emp.nombre?.toLowerCase().includes(term)
     );
-    setFilteredUsers(filtered);
+    setFilteredEmployees(filtered);
+  };
+
+  const handleDelete = async (id: number) => {
+    const { error } = await supabase.from("empleados").delete().eq("id", id);
+    if (error) {
+      console.error("Error al eliminar empleado:", error);
+      message.error(`Error al eliminar: ${error.message}`);
+    } else {
+      message.success("Empleado eliminado correctamente");
+      const updated = employees.filter(emp => emp.id !== id);
+      setEmployees(updated);
+      setFilteredEmployees(updated);
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    const { error } = await supabase.from("empleados").delete().neq("id", -1); // Elimina todos
+    if (error) {
+      console.error("Error al eliminar todos los empleados:", error);
+      message.error(`Error al eliminar todos: ${error.message}`);
+    } else {
+      message.success("Todos los empleados han sido eliminados");
+      setEmployees([]);
+      setFilteredEmployees([]);
+    }
   };
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
-    { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Phone", dataIndex: "phone", key: "phone" },
-    { title: "Nombre usuario", dataIndex: "nombre_usuario", key: "nombre_usuario" },
+    { title: "Nombre", dataIndex: "nombre", key: "nombre" },
+    { title: "Rol", dataIndex: "rol", key: "rol" },
+    {
+      title: "Administrador",
+      dataIndex: "admin",
+      key: "admin",
+      render: (admin: boolean) => (admin ? "Sí" : "No"),
+    },
+    {
+      title: "Acciones",
+      key: "acciones",
+      render: (_: any, record: Employee) => (
+        <Popconfirm
+          title="¿Estás seguro de eliminar este empleado?"
+          onConfirm={() => handleDelete(record.id)}
+          okText="Sí"
+          cancelText="No"
+        >
+          <Button danger>Eliminar</Button>
+        </Popconfirm>
+      ),
+    },
   ];
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>Usuarios</h2>
+      <h2>Trabajadores</h2>
 
       <Input.Search
-        placeholder="Buscar por ID o nombre de usuario"
+        placeholder="Buscar por ID o Nombre"
         value={searchTerm}
         onChange={(e) => handleSearch(e.target.value)}
         onSearch={handleSearch}
@@ -54,24 +99,39 @@ export default function UsersV() {
       />
 
       <Table
-        dataSource={filteredUsers}
+        dataSource={filteredEmployees}
         columns={columns}
         rowKey="id"
         loading={loading}
         pagination={{ pageSize: 5 }}
       />
 
-      <Button
-        type="primary"
-        style={{ marginTop: 16, marginRight: 8 }}
-        onClick={() => navigate("/users/form")}
-      >
-        Añadir Usuario
-      </Button>
+      <div style={{ marginTop: 16 }}>
+        <Button
+          type="primary"
+          style={{ marginRight: 8 }}
+          onClick={() => navigate("/employees/form")}
+        >
+          Añadir Empleado
+        </Button>
 
-      <Button type="default" onClick={() => navigate("/")}>
-        Volver al Inicio
-      </Button>
+        <Popconfirm
+          title="¿Estás seguro de eliminar todos los empleados?"
+          onConfirm={handleDeleteAll}
+          okText="Sí, eliminar todos"
+          cancelText="No"
+        >
+          <Button danger style={{ marginRight: 8 }}>
+            Eliminar Todos
+          </Button>
+        </Popconfirm>
+
+        <Button type="default" onClick={() => navigate("/")}>
+          Volver al Inicio
+        </Button>
+      </div>
     </div>
   );
-}
+};
+
+export default EmployeesVista;
