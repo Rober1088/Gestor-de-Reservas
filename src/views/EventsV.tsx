@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Table, Button, Input } from "antd";
+import { Table, Button, Input, Popconfirm, message } from "antd";
 import { fetchEvents } from "../controllers/supabaseDataFetch";
 import { Event } from "../Models/events";
 import { useNavigate } from "react-router-dom";
+import supabase from "../utils/supabase";
 
 export default function EventsV() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -22,16 +23,35 @@ export default function EventsV() {
     loadEvents();
   }, []);
 
-  // Función para manejar la búsqueda por ID
   const handleSearch = (value: string) => {
     setSearchId(value);
     if (value.trim() === "") {
       setFilteredEvents(events);
     } else {
-      const filtered = events.filter(event =>
+      const filtered = events.filter((event) =>
         event.id.toString().includes(value.trim())
       );
       setFilteredEvents(filtered);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    console.log("Eliminando evento con ID:", id); // Verifica el ID
+
+    // Realizar la eliminación en la base de datos
+    const { data, error } = await supabase.from("eventos").delete().eq("id", id);
+    
+    if (error) {
+      message.error("Error al eliminar la cita");
+      console.error("Error al eliminar el evento:", error);  // Ver detalles del error
+    } else {
+      message.success("Cita eliminada");
+      console.log("Evento eliminado correctamente", data);
+
+      // Actualizamos los estados para reflejar la eliminación en la UI
+      const updatedEvents = events.filter((event) => event.id !== id);
+      setEvents(updatedEvents);
+      setFilteredEvents(updatedEvents);
     }
   };
 
@@ -42,13 +62,26 @@ export default function EventsV() {
     { title: "Localización", dataIndex: "localizacion", key: "localizacion" },
     { title: "Inicio", dataIndex: "start_time", key: "start_time" },
     { title: "Fin", dataIndex: "end_time", key: "end_time" },
+    {
+      title: "Acciones",
+      key: "acciones",
+      render: (_: any, record: Event) => (
+        <Popconfirm
+          title="¿Seguro que deseas eliminar esta cita?"
+          onConfirm={() => handleDelete(record.id)}
+          okText="Sí"
+          cancelText="No"
+        >
+          <Button danger>Eliminar</Button>
+        </Popconfirm>
+      ),
+    },
   ];
 
   return (
     <div style={{ padding: 20 }}>
       <h2>Eventos</h2>
 
-      {/* Input de búsqueda por ID */}
       <Input.Search
         placeholder="Buscar por ID"
         value={searchId}
@@ -66,9 +99,9 @@ export default function EventsV() {
         pagination={{ pageSize: 5 }}
       />
 
-      <Button 
-        type="primary" 
-        style={{ marginTop: 16, marginRight: 8 }} 
+      <Button
+        type="primary"
+        style={{ marginTop: 16, marginRight: 8 }}
         onClick={() => navigate("/events/form")}
       >
         Añadir Evento

@@ -16,7 +16,7 @@ export async function insertEmployee(employee: Omit<Employee, "id">) {
 }
 
 // Función para insertar un evento
-export async function insertEvent(event: Event) {
+export async function insertEvent(event: Omit<Event, "id">) {
   const { data, error } = await supabase.from('eventos').insert([event]);
   if (error) {
     console.error('Error inserting event:', error);
@@ -24,6 +24,7 @@ export async function insertEvent(event: Event) {
   }
   return data;
 }
+
 
 // Función para insertar un usuario
 export async function insertUser(user: User) {

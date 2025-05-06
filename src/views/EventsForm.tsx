@@ -21,14 +21,14 @@ export default function EventsForm() {
   const onFinish = async (values: EventFormValues) => {
     setLoading(true);
 
-    // Transformamos a los nombres que espera la base de datos
     const formattedValues = {
       titulo: values.titulo,
       descripcion: values.descripcion,
       localizacion: values.localizacion,
-      fecha_inicio: values.start_time.toISOString(), // <-- nombre correcto
-      fecha_fin: values.end_time.toISOString(),       // <-- nombre correcto
+      start_time: values.start_time.toISOString(), 
+      end_time: values.end_time.toISOString(),     
     };
+    
 
     const result = await insertEvent(formattedValues);
 
@@ -37,7 +37,7 @@ export default function EventsForm() {
       form.resetFields();
     } else {
       message.error("Error al agregar evento.");
-    }
+    } 
 
     setLoading(false);
     navigate("/events");
