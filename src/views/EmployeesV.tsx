@@ -37,7 +37,7 @@ const EmployeesVista: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     setDeleting(true);  
-    const { error } = await supabase.from("empleados").delete().eq("id", id);
+    const { error } = await supabase.from("trabajadores").delete().eq("id", id);
     if (error) {
       console.error("Error al eliminar empleado:", error);
       message.error(`Error al eliminar: ${error.message}`);
@@ -57,7 +57,7 @@ const EmployeesVista: React.FC = () => {
       return;
     }
     setDeleting(true);  
-    const { error } = await supabase.from("empleados").delete().in("id", ids);
+    const { error } = await supabase.from("trabajadores").delete().in("id", ids);
     if (error) {
       console.error("Error al eliminar todos los empleados:", error);
       message.error(`Error al eliminar todos: ${error.message}`);
