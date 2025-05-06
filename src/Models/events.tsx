@@ -4,6 +4,7 @@ export interface Event {
   titulo: string;
   descripcion: string;
   localizacion: string;
-  start_time: string; // o si usas Dayjs, sería Dayjs
-  end_time: string;   // o Dayjs
+  fecha_inicio: string; // timestamp
+  fecha_fin: string;    // timestamp
+  
 }

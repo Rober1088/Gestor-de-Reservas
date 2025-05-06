@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import dayjs, { Dayjs } from "dayjs";
 import { insertEvent } from "../controllers/supabaseDataInsert";
 
-// Interface del formulario (valores que captura el usuario)
+
 interface EventFormValues {
   titulo: string;
   descripcion: string;
@@ -25,10 +25,10 @@ export default function EventsForm() {
       titulo: values.titulo,
       descripcion: values.descripcion,
       localizacion: values.localizacion,
-      start_time: values.start_time.toISOString(), 
-      end_time: values.end_time.toISOString(),     
+      fecha_inicio: values.start_time.toISOString(), 
+      fecha_fin: values.end_time.toISOString(),       
     };
-    
+
 
     const result = await insertEvent(formattedValues);
 

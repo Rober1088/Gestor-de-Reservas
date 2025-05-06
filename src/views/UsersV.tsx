@@ -1,80 +1,75 @@
-import React, { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Table, Button, Input, Popconfirm, message } from "antd";
-import { fetchEmployees } from "../controllers/supabaseDataFetch";
-import { Employee } from "../Models/employees";
+import { fetchUsers } from "../controllers/supabaseDataFetch";
+import { User } from "../Models/users";
 import { useNavigate } from "react-router-dom";
 import supabase from "../utils/supabase";
 
-const EmployeesVista: React.FC = () => {
-  const [employees, setEmployees] = useState<Employee[]>([]);
-  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+export default function UsersV() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function loadEmployees() {
+    async function loadUsers() {
       setLoading(true);
-      const data = await fetchEmployees();
-      console.log("Empleados obtenidos:", data);
-      setEmployees(data || []);
-      setFilteredEmployees(data || []);
+      const data = await fetchUsers();
+      console.log("Usuarios obtenidos:", data);
+      setUsers(data || []);
+      setFilteredUsers(data || []);
       setLoading(false);
     }
-    loadEmployees();
+    loadUsers();
   }, []);
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
     const term = value.toLowerCase().trim();
-    const filtered = employees.filter(emp =>
-      emp.id.toString().includes(term) ||
-      emp.nombre?.toLowerCase().includes(term)
+    const filtered = users.filter(user =>
+      user.id.toString().includes(term) ||
+      user.nombre_usuario?.toLowerCase().includes(term)
     );
-    setFilteredEmployees(filtered);
+    setFilteredUsers(filtered);
   };
 
   const handleDelete = async (id: number) => {
-    const { error } = await supabase.from("empleados").delete().eq("id", id);
+    const { error } = await supabase.from("usuarios").delete().eq("id", id);
     if (error) {
-      console.error("Error al eliminar empleado:", error);
+      console.error("Error al eliminar usuario:", error);
       message.error(`Error al eliminar: ${error.message}`);
     } else {
-      message.success("Empleado eliminado correctamente");
-      const updated = employees.filter(emp => emp.id !== id);
-      setEmployees(updated);
-      setFilteredEmployees(updated);
+      message.success("Usuario eliminado");
+      const updatedUsers = users.filter((user) => user.id !== id);
+      setUsers(updatedUsers);
+      setFilteredUsers(updatedUsers);
     }
   };
 
   const handleDeleteAll = async () => {
-    const { error } = await supabase.from("empleados").delete().neq("id", -1); // Elimina todos
+    const { error } = await supabase.from("usuarios").delete().neq("id", -1);
     if (error) {
-      console.error("Error al eliminar todos los empleados:", error);
+      console.error("Error al eliminar todos los usuarios:", error);
       message.error(`Error al eliminar todos: ${error.message}`);
     } else {
-      message.success("Todos los empleados han sido eliminados");
-      setEmployees([]);
-      setFilteredEmployees([]);
+      message.success("Todos los usuarios fueron eliminados");
+      setUsers([]);
+      setFilteredUsers([]);
     }
   };
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
-    { title: "Nombre", dataIndex: "nombre", key: "nombre" },
-    { title: "Rol", dataIndex: "rol", key: "rol" },
-    {
-      title: "Administrador",
-      dataIndex: "admin",
-      key: "admin",
-      render: (admin: boolean) => (admin ? "Sí" : "No"),
-    },
+    { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Phone", dataIndex: "phone", key: "phone" },
+    { title: "Nombre usuario", dataIndex: "nombre_usuario", key: "nombre_usuario" },
     {
       title: "Acciones",
       key: "acciones",
-      render: (_: any, record: Employee) => (
+      render: (_: any, record: User) => (
         <Popconfirm
-          title="¿Estás seguro de eliminar este empleado?"
+          title="¿Seguro que deseas eliminar este usuario?"
           onConfirm={() => handleDelete(record.id)}
           okText="Sí"
           cancelText="No"
@@ -87,10 +82,10 @@ const EmployeesVista: React.FC = () => {
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>Trabajadores</h2>
+      <h2>Usuarios</h2>
 
       <Input.Search
-        placeholder="Buscar por ID o Nombre"
+        placeholder="Buscar por ID o nombre de usuario"
         value={searchTerm}
         onChange={(e) => handleSearch(e.target.value)}
         onSearch={handleSearch}
@@ -99,7 +94,7 @@ const EmployeesVista: React.FC = () => {
       />
 
       <Table
-        dataSource={filteredEmployees}
+        dataSource={filteredUsers}
         columns={columns}
         rowKey="id"
         loading={loading}
@@ -110,13 +105,13 @@ const EmployeesVista: React.FC = () => {
         <Button
           type="primary"
           style={{ marginRight: 8 }}
-          onClick={() => navigate("/employees/form")}
+          onClick={() => navigate("/users/form")}
         >
-          Añadir Empleado
+          Añadir Usuario
         </Button>
 
         <Popconfirm
-          title="¿Estás seguro de eliminar todos los empleados?"
+          title="¿Seguro que deseas eliminar todos los usuarios?"
           onConfirm={handleDeleteAll}
           okText="Sí, eliminar todos"
           cancelText="No"
@@ -132,6 +127,4 @@ const EmployeesVista: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default EmployeesVista;
+}

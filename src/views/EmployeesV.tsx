@@ -10,6 +10,7 @@ const EmployeesVista: React.FC = () => {
   const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [deleting, setDeleting] = useState<boolean>(false);  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,6 +36,7 @@ const EmployeesVista: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
+    setDeleting(true);  
     const { error } = await supabase.from("empleados").delete().eq("id", id);
     if (error) {
       console.error("Error al eliminar empleado:", error);
@@ -45,6 +47,7 @@ const EmployeesVista: React.FC = () => {
       setEmployees(updated);
       setFilteredEmployees(updated);
     }
+    setDeleting(false);  
   };
 
   const handleDeleteAll = async () => {
@@ -53,7 +56,7 @@ const EmployeesVista: React.FC = () => {
       message.info("No hay empleados para eliminar.");
       return;
     }
-
+    setDeleting(true);  
     const { error } = await supabase.from("empleados").delete().in("id", ids);
     if (error) {
       console.error("Error al eliminar todos los empleados:", error);
@@ -63,6 +66,7 @@ const EmployeesVista: React.FC = () => {
       setEmployees([]);
       setFilteredEmployees([]);
     }
+    setDeleting(false);  
   };
 
   const columns = [
@@ -85,7 +89,7 @@ const EmployeesVista: React.FC = () => {
           okText="Sí"
           cancelText="No"
         >
-          <Button danger>Eliminar</Button>
+          <Button danger loading={deleting}>Eliminar</Button>
         </Popconfirm>
       ),
     },
@@ -127,7 +131,7 @@ const EmployeesVista: React.FC = () => {
           okText="Sí, eliminar todos"
           cancelText="No"
         >
-          <Button danger style={{ marginRight: 8 }}>
+          <Button danger style={{ marginRight: 8 }} loading={deleting}>
             Eliminar Todos
           </Button>
         </Popconfirm>
