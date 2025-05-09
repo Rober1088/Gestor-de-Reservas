@@ -1,9 +1,25 @@
+// src/views/Bottom.tsx
 import supabase from "../utils/supabase";
+import { useNavigate } from "react-router-dom";
 
 export default function Bottom() {
-    async function logOut() {
-        await supabase.auth.signOut();
-    }
+  const navigate = useNavigate();
 
-    return <button className="logout-button" onClick={logOut}>Cerrar Sesion</button>
-};
+  async function logOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Error al cerrar sesión:", error.message);
+    } else {
+      console.log("Sesión cerrada correctamente");
+      navigate("/login"); // Redirige al login después del logout
+    }
+  }
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "2rem" }}>
+      <button className="logout-button" onClick={logOut}>
+        Cerrar Sesión
+      </button>
+    </div>
+  );
+}

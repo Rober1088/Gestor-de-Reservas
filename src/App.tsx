@@ -21,9 +21,9 @@ function App() {
   useEffect(() => {
     supabase.auth.onAuthStateChange((event, session) => {
       if (!session) {
-        navigator("/login");
+        navigate("/login");
       } else {
-        navigator("/");
+        navigate("/");
       }
     });
   }, [navigator]);
